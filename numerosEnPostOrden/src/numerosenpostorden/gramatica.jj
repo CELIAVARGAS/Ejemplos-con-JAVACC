@@ -1,0 +1,103 @@
+
+options {
+  LOOKAHEAD = 1;
+  STATIC = false;
+}
+
+PARSER_BEGIN(gramatica)
+
+package numerosenpostorden;
+
+    public class gramatica {
+    }
+PARSER_END(gramatica)
+
+
+/***************************************************** Inicio Lexico *****************************************************/
+SKIP : {
+      " "
+    | "\t"
+    | "\r"
+    | "\n"
+}
+
+TOKEN : {
+     <numero: (["0"-"9"])+>
+    |<mas: "+">
+    |<menos: "-">
+}
+/***************************************************** Fin Lexico ****************************************************/
+
+
+
+/***************************************************** Inicio Sintactico ****************************************************/
+void S():
+{
+    String operador="", operacion="",traduccion="";
+}
+{
+    traduccion = E(operador,operacion)
+    {
+        System.out.println("La traduccion es "+traduccion);
+    }
+}
+ 
+String E(String operador1, String operacion1):
+{
+    String  operacion="", operador="",traduccion="",num1="";
+    Token num;
+}
+{
+    <mas> 
+    {
+        operador="+";
+    }
+    traduccion=EP(operador,operacion1)
+    {
+        return traduccion;
+    }
+    |
+    <menos>
+    {
+        operador="-";
+    }
+    traduccion=EP(operador,operacion1)
+    {
+        return traduccion;
+    }
+    |
+    num = <numero> 
+    {
+            num1 = String.valueOf(num.image);
+            operacion = operador1+operacion1+num1;
+    }
+    traduccion=EP(operador1,operacion)
+    {
+        return traduccion;
+    }
+}
+
+
+
+String EP(String operador1, String operacion1) : 
+{
+    String operacion=operacion1;
+    String operador=operador1;
+    String traduccion="";
+    
+    System.out.println("Operacion "+operacion);    
+}
+{
+    traduccion = E(operador1,operacion)
+    {
+        return traduccion;
+    }    
+    |
+    {
+        traduccion = operacion;
+        return traduccion;
+    }
+}
+
+
+/***************************************************** Fin Sintactico ****************************************************/

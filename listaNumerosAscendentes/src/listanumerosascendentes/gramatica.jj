@@ -1,0 +1,106 @@
+
+options {
+  LOOKAHEAD = 1;
+  STATIC = false;
+}
+
+PARSER_BEGIN(gramatica)
+
+package listanumerosascendentes;
+
+    public class gramatica {
+    }
+PARSER_END(gramatica)
+
+
+/***************************************************** Inicio Lexico *****************************************************/
+SKIP : {
+      " "
+    | "\t"
+    | "\r"
+    | "\n"
+}
+
+TOKEN : {
+     <numero: (["0"-"9"])+>
+    |<coma: ",">
+}
+/***************************************************** Fin Lexico ****************************************************/
+
+
+
+/***************************************************** Inicio Sintactico ****************************************************/
+void S():
+{
+    int nA =0, nS=0;
+    boolean valido= true,validoA=true;
+    String numeros="";
+}
+{
+    validoA=INICIO(nA,nS,valido,numeros)
+    {
+        if(validoA==true){
+            System.out.println("LA LISTA ESTA ORDENADA ASCENDENTEMENTE ");
+        }else{
+            System.out.println("LA LISTA NO ESTA ORDENADA ASCENDENTEMENTE ");
+        }
+    }
+}
+ 
+boolean INICIO(int nA1,int nS1,boolean valido1,String numeros1):
+{
+    int nA =0, nS=0;
+    boolean valido= valido1,validoA=true;
+    Token n;
+    String numeros=numeros1;
+}
+{
+    n=<numero> 
+    {
+        nA=nS1;
+        nS= Integer.parseInt(n.image);
+    }
+    validoA =SIGUIENTE(nA,nS,valido,numeros)
+    {
+        return validoA;
+    }
+}
+
+boolean SIGUIENTE(int nA1,int nS1,boolean valido1,String numeros1): 
+{
+    int nA =nA1, nS=nS1;
+    boolean valido= valido1,validoA=true;
+    String numeros=numeros1;
+}
+{
+    <coma> 
+    {
+        if(valido==true){
+            if(nA <= nS){
+                valido=true;
+                numeros=numeros1+" "+nS;
+                System.out.println("Numeros comparados "+numeros);
+            }else{
+                System.out.println("Los digitos no estan ordenados. Numero Anterior="+nA +" numero Siguiente="+nS);
+                nA=0; nS=0;
+                valido=false;            
+            }
+        }else{
+            nA=0;nS=0;
+        }
+    }
+    validoA= INICIO (nA,nS,valido,numeros)
+        {
+            return validoA;
+        }
+    |
+    /*lambda*/
+    {
+        numeros=numeros1+" "+nS;
+        System.out.println("Numeros comparados "+numeros);
+        return valido;
+    }
+}
+
+
+/***************************************************** Fin Sintactico ****************************************************/
